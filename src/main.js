@@ -7,67 +7,66 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import closeIcon from './img/bi_x-octagon.png';
 
-import Axios from 'axios';
+import axios from 'axios';
 
 const form = document.querySelector('form');
+
 const list = document.querySelector('.gallery');
+const searchInput = document.querySelector('.form-input');
+
 form.addEventListener('submit', onSearchButton);
+// refs.formElem.addEventListener('submit', onSearchButton);
+
+let query = '';
+let currentPage = 1;
+let totalResults = 0;
+const PAGE_SIZE = 15;
+
+// const inputSearch = form.elements.search.value;
+
+
+
+
 
 // ----Event Searching photos----
-function onSearchButton(e) {
+
+
+async function onSearchButton(e) {
   e.preventDefault();
-  const inputSearch = form.elements.search.value;
-  if (inputSearch === '') {
-    iziToast.error({
-      messageColor: '#FFF',
-      color: '#EF4040',
-      iconUrl: closeIcon,
-      position: 'topRight',
-      message: 'Please, enter what do you want to find!',
-    });
-    return;
-  }
-  form.insertAdjacentHTML('afterend', '<span class="loader"></span>');
+  query = e.target.elements.search.value.trim();
+
+  
+  
+  currentPage = 1;
   list.innerHTML = '';
-  getPhotos(inputSearch);
-  form.reset();
+  const data = await getPhotos();
+
+  console.log(data);
+  
 }
 
-// ----Promise function----
-function getPhotos(inputSearch) {
+
+// ----FORMER Promise function----
+
+async function getPhotos() {
+  
   const searchParams = new URLSearchParams({
     key: '42306918-f68a47ae9b20261d6e2f05069',
-    q: `${inputSearch}`,
+    q: `${query}`,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
+    page: currentPage,
+    per_page: PAGE_SIZE,
   });
 
   const url = `https://pixabay.com/api/?${searchParams}`;
-  return fetch(url)
-    .then(response => {
-      return response.json();
-    })
-    .then(photos => {
-      const arrayPhotos = photos.hits;
-      if (arrayPhotos.length === 0) {
-        noImages();
-      }
-      const spanLoader = document.querySelector('.loader');
-      renderPhoto(arrayPhotos);
-      simpleLightbox();
-      spanLoader.remove();
-    })
-    .catch(error => {
-      iziToast.error({
-        messageColor: '#FFF',
-        color: '#EF4040',
-        iconUrl: closeIcon,
-        position: 'topRight',
-        message: `${error}`,
-      });
-    });
+
+  const res = await axios.get(url);
+  return res.data;
 }
+
+
 
 // ----When photos are not found----
 function noImages() {
@@ -119,4 +118,13 @@ function simpleLightbox() {
   });
   gallery.on('show.simpleLightbox');
   gallery.refresh();
+}
+
+
+function showLoader() {
+  refs.loaderElem.classList.remove('hidden');
+}
+
+function hideLoader() {
+  refs.loaderElem.classList.add('hidden');
 }
