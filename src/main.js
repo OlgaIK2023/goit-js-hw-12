@@ -7,6 +7,8 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import closeIcon from './img/bi_x-octagon.png';
 
+import Axios from 'axios';
+
 const form = document.querySelector('form');
 const list = document.querySelector('.gallery');
 form.addEventListener('submit', onSearchButton);
