@@ -88,7 +88,7 @@ async function getPhotos() {
 }
 
 // ----When photos are not found----
-export function noPhotos(hits){
+function noPhotos(hits){
   if (hits.length === 0) {
       iziToast.error({
           messageColor: '#FFF',
@@ -101,7 +101,7 @@ export function noPhotos(hits){
 }
 
 // ----Markup HTML----
-export function renderPhoto(hits) {
+function renderPhoto(hits) {
   const markup = hits
       .map(({ largeImageURL, webformatURL, tags, likes, views, comments, downloads }) =>
           `<li class='gallery-item'>
@@ -132,7 +132,7 @@ function simpleLightbox() {
 
 // ----Event Loading photos----
 
-export function addLoadButton(totalHits,perPage) {
+function addLoadButton(totalHits,perPage) {
   const totalPages = Math.ceil(totalHits / perPage);     
    if (totalPages>1) {
       refs.loadButton.classList.remove('hidden'); 
@@ -140,7 +140,7 @@ export function addLoadButton(totalHits,perPage) {
     
 }
 
-export function smoothScroll() {
+function smoothScroll() {
   const { height: itemHeight } = document.querySelector('.gallery-item').getBoundingClientRect();
   window.scrollBy({
   top: itemHeight*2,
@@ -172,7 +172,7 @@ async function onLoadMoreButton() {
 
 
 // ---- The end of the collection----
-export function endOfCollection(currentPage, totalHits, PAGE_SIZE) {
+function endOfCollection(currentPage, totalHits, PAGE_SIZE) {
   const totalPages = Math.ceil(totalHits / PAGE_SIZE);
   if (currentPage>=totalPages) {
       observer.observe(refs.list.lastChild);
